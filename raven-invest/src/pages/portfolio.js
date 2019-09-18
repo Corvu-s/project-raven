@@ -5,6 +5,7 @@ import _ from "lodash";
 //there is a call limit. 5 per min. 500 per day
 // for the reccomendation thing, reset back to default values beore api call
 function Portfolio() {
+  const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   const [rec, setRec] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [ticker, setTicker] = useState(" ");
@@ -42,14 +43,22 @@ function Portfolio() {
         `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${ticker}&apikey=${key}`
       )
       .then(match => {
-        console.log(match.data.bestMatches);
-
-        match.data.bestMatches.map(item => {
-          setRec([...rec, { ticker: item["1. symbol"], id: item["2. name"] }]);
-          console.log(rec);
+        console.log(match.data.bestMatches["3"]);
+        arr.map(item => {
+          let val = match.data.bestMatches[item];
+          if (val == undefined) {
+            console.log("undef");
+          } else {
+            setRec([...rec, { ticker: val["1. symbol"], id: val["2. name"] }]);
+            console.log(rec.ticker);
+          }
         });
+        //match.data.bestMatches.map(item => {
+        //setRec([...rec, { ticker: item["1. symbol"], id: item["2. name"] }]);
+        //console.log(rec);
+        //});
       });
-  }, [ticker]);
+  }, [btnVal]);
   return (
     <div>
       <p>portfolio</p>
@@ -74,7 +83,7 @@ function Portfolio() {
       <ul>
         {stocks.map(item => (
           <li key={item.timestamp}>
-            symbol:{item.symbol} Price:{item.symbol}{" "}
+            symbol:{item.symbol} Price:{item.price}{" "}
           </li>
         ))}
       </ul>
